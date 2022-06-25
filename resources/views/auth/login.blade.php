@@ -8,6 +8,12 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
+
+                    {{--Check Blocked Account Middleware--}}
+                    @if (session('message'))
+                        <div class="alert alert-danger text-center" >{{ session('message') }}</div>
+                    @endif
+
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 

@@ -94,6 +94,7 @@
 {{--                    <a href="https://forge.laravel.com">Forge</a>--}}
 {{--                    <a href="https://vapor.laravel.com">Vapor</a>--}}
 {{--                    <a href="https://github.com/laravel/laravel">GitHub</a>--}}
+                    <p1>by Krasimir Velikov</p1>
                 </div>
             </div>
         </div>

@@ -18,13 +18,15 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    @yield('head')
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+                    {{ config('app.name', 'Warehouse') }} <img style="vertical-align: middle; height:30px" src="{{asset('warehouse.png')}}">
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -49,6 +51,44 @@
                                 </li>
                             @endif
                         @else
+                            @if(!Route::is('home'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ route('home') }}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Home</a>
+                                </li>
+                                @if(!Route::is('products'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{route('products')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Products</a>
+                                </li>
+                                @endif
+                                @if(!Route::is('transfers'))
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{route('transfers')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Transfers</a>
+                                    </li>
+                                @endif
+                                @if(!Route::is('clients'))
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{route('clients')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Clients</a>
+                                    </li>
+                                @endif
+                                @if(!Route::is('suppliers'))
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{route('suppliers')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Suppliers</a>
+                                    </li>
+                                @endif
+                                @if(!Route::is('finances'))
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{route('finances')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Finances</a>
+                                    </li>
+                                @endif
+                                @if(!Route::is('employees'))
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{route('employees')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Employees</a>
+                                    </li>
+                                @endif
+                                <li class="nav-item"><a class="nav-link">{{" | "}}</a></li>
+
+
+                            @endif
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
@@ -77,4 +117,5 @@
         </main>
     </div>
 </body>
+@yield('scripts')
 </html>
