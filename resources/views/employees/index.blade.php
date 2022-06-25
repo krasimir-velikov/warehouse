@@ -15,7 +15,7 @@
             color: white;
         }
         .block{
-            background-color: red;
+            background-color: dimgrey;
             color: white;
         }
         .create{
@@ -27,6 +27,10 @@
             background-color: #2fa360;
             color: white;
 
+        }
+        .delete{
+            background-color: red;
+            color: white;
         }
         form{
             display: inline;
@@ -88,7 +92,7 @@
                                     </tr>
 
                                     @foreach($admins as $admin)
-                                        <tr class="row my-5">
+                                        <tr id="row{{$admin->id}}" class="row my-5">
                                             <td class="col-3 border-right text-center">{{$admin->name}}</td>
                                             <td class="col-3 border-right text-center">{{$admin->email}}</td>
                                             @if($admin->status==1)<td class="col-3 border-right text-center" id="{{$admin->id}}S" style="color: forestgreen">Active</td>
@@ -107,6 +111,9 @@
                                                     <button id="{{$admin->id}}A" class="btn activate" value="{{$admin->id}}" title="Activate the account" onclick="activate(this.value)">Activate</button>
 
                                                 @endif
+
+                                                <button id="{{$admin->id}}D" class="btn delete" value="{{$admin->id}}" title="Delete the account" onclick="deleteIt(this.value)">Delete</button>
+
                                             </td>
                                         </tr>
 
@@ -144,7 +151,7 @@
                                         </tr>
 
                                         @foreach($accountants as $accountant)
-                                            <tr class="row my-5">
+                                            <tr id="row{{$accountant->id}}" class="row my-5">
                                                 <td class="col-3 border-right text-center">{{$accountant->name}}</td>
                                                 <td class="col-3 border-right text-center">{{$accountant->email}}</td>
                                                 @if($accountant->status==1)<td class="col-3 border-right text-center" id="{{$accountant->id}}S" style="color: forestgreen">Active</td>
@@ -201,7 +208,7 @@
                                         </tr>
 
                                         @foreach($workers as $worker)
-                                            <tr class="row my-5">
+                                            <tr id="row{{$worker->id}}" class="row my-5">
                                                 <td class="col-3 border-right text-center">{{$worker->name}}</td>
                                                 <td class="col-3 border-right text-center">{{$worker->email}}</td>
                                                 @if($worker->status==1)<td class="col-3 border-right text-center" id="{{$worker->id}}S" style="color: forestgreen">Active</td>
@@ -260,6 +267,16 @@
 
             })
         }
+        function deleteIt(value){
+            alert("U SURE?");
+                $.get("{{route('employees.delete')}}", {id: value}, function(data) {
+
+                    $("#row"+data).remove();
+
+
+
+                })
+            }
 
     </script>
 

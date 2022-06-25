@@ -36,6 +36,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/employees/edit', 'EmployeeController@edit')->name('employees.edit');
     Route::get('/employees/activate', 'EmployeeController@activate')->name('employees.activate');
     Route::get('/employees/block', 'EmployeeController@block')->name('employees.block');
+    Route::get('/employees/delete', 'EmployeeController@delete')->name('employees.delete');
     Route::post('/employees/store', 'EmployeeController@store')->name('employees.store');
     Route::post('/employees/store_edit', 'EmployeeController@storeEdit')->name('employees.storeEdit');
 

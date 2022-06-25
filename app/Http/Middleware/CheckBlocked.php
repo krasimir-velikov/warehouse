@@ -20,6 +20,11 @@ class CheckBlocked
 
             return redirect()->route('login')->withMessage('Your account has been blocked. Please contact your administrator.');
         }
+        elseif(auth()->check() && auth()->user()->status==2){
+            auth()->logout();
+
+            return redirect()->route('login')->withMessage('Your account has been deleted. Please contact your administrator.');
+        }
 
         return $next($request);
     }
