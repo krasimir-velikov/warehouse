@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateActiveEmailsTable extends Migration
+class CreateSubcategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateActiveEmailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('active_emails', function (Blueprint $table) {
+        Schema::create('subcategories', function (Blueprint $table) {
             $table->id();
-            $table->string('email');
-            $table->integer('user_id');
-//            $table->foreign('user_id')->references('id')->on('users')
-//                ->onDelete('cascade');
+            $table->string('name');
+            $table->integer('category_id');
+            $table->string('description')->nullable();
+            $table->boolean('deleted')->default(0);
+            $table->timestamps();
         });
     }
 
@@ -29,6 +30,6 @@ class CreateActiveEmailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('active_emails');
+        Schema::dropIfExists('subcategories');
     }
 }

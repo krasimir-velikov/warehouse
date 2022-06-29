@@ -10,7 +10,7 @@
     <title>{{ config('app.name', 'Warehouse') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -75,12 +75,12 @@
                                         <a class="nav-link" href="{{route('suppliers')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Suppliers</a>
                                     </li>
                                 @endif
-                                @if(!Route::is('finances'))
+                                @if(!Route::is('finances') && in_array(Auth::user()->level, [1,2,3]))
                                     <li class="nav-item">
                                         <a class="nav-link" href="{{route('finances')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Finances</a>
                                     </li>
                                 @endif
-                                @if(!Route::is('employees'))
+                                @if(!Route::is('employees') && in_array(Auth::user()->level, [1,2]))
                                     <li class="nav-item">
                                         <a class="nav-link" href="{{route('employees')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Employees</a>
                                     </li>

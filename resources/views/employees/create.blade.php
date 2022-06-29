@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <button class="btn btn-primary" onclick="window.location='{{route('employees')}}'">Back to Employees</button>
+    <button class="btn mx-3 btn-primary" onclick="window.location='{{route('employees')}}'">Back to Employees</button>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -11,7 +11,6 @@
                     <div class="card-body">
                         <form method="POST" action="{{ route('employees.store') }}">
                             @csrf
-                            <input type="hidden" name="level" value="2">
 
 
                             <div class="form-group row">
@@ -91,4 +90,23 @@
             </div>
         </div>
     </div>
+    @if(isset($temp))
+        <div id="successMessage"></div>
+    @endif
+@endsection
+@section('scripts')
+    <script>
+        $(document).ready(function(){
+            if(document.getElementsByClassName("invalid-feedback").length){
+                alert('Employee account creation failed!')
+                console.log(1);
+
+            }else if(document.getElementById('successMessage')) {
+                alert('Successfully created new employee account.')
+            }
+        })
+
+
+    </script>
+
 @endsection

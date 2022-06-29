@@ -7,12 +7,13 @@ use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class EmployeeController extends Controller
 {
     public function index(){
 
-            if(Auth::user()->level<=2){
+            if(in_array(Auth::user()->level, [1,2])){
 
                 $admins = User::where('level', 2)->where('status', '!=', 2)->get();
                 $accountants = User::where('level', 3)->where('status', '!=', 2)->get();
@@ -29,11 +30,17 @@ class EmployeeController extends Controller
     }
     public function create(Request $request){
 
-        if(Auth::user()->level<=2){
+        if(in_array(Auth::user()->level, [1,2])){
 
         $level = $request->level;
+        if($request->temp) {
+            $temp=$request->temp;
+            return view('employees.create', compact('level','temp'));
+        }
+        else{
+            return view('employees.create', compact('level'));
+        }
 
-        return view('employees.create', compact('level'));
         }
         else{
             return view('home2');
@@ -41,33 +48,43 @@ class EmployeeController extends Controller
     }
     public function store(Request $request){
 
-        $this->validator($request->all())->validate();
+        if((Auth::user()->level == 1 && in_array($request->level, [2,3,4])) || (Auth::user()->level == 2 && in_array($request->level, [3,4]))) {
 
-        $employee = new User();
-        $employee->name = $request->name;
-        $employee->email = $request->email;
-        $employee->level = $request->level;
-        $employee->password = bcrypt($request->password);
-        $employee->save();
+            $this->validator($request->all())->validate();
 
-        $email = new ActiveEmail();
-        $email->email = $employee->email;
-        $email->user_id = $employee->id;
-        $email->save();
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->level = $request->level;
+            $user->password = bcrypt($request->password);
+            $user->save();
 
-        Session()->flash('message','Успешен запис!');
 
-        return $this->index();
+
+            return redirect(route('employees.create', ['temp'=>1,'level'=>$request->level]));
+
+        }
+        else{
+            return "Unauthorized action!";
+        }
 
     }
 
     public function edit(Request $request){
 
-        if(Auth::user()->level <= 2){
+        if(in_array(Auth::user()->level, [1,2])){
 
-        $user = User::where('id', $request->id)->first();
+            $user = User::where('id', $request->id)->first();
 
-        return view('employees.edit', compact('user'));
+            if($request->temp){
+                $temp = $request->temp;
+                return view('employees.edit', compact('user', 'temp'));
+
+            }else{
+                return view('employees.edit', compact('user'));
+
+            }
+
         }
         else{
             return view('home2');
@@ -76,13 +93,12 @@ class EmployeeController extends Controller
 
     }
 
-    public function storeEdit(Request $request){
+    public function update(Request $request){
 
         $user = User::where('id', $request->id)->first();
 
-        if((Auth::user()->level==1 && $user->level > 1) || (Auth::user()->level==2 && $user->level > 2)){
 
-            if($request->level && (($request->level > 1 && Auth::user()->level == 1) || ($request->level > 2 && Auth::user()->level == 2))){
+            if($request->level && (Auth::user()->level==1 && in_array($request->level, [2,3,4])) || (Auth::user()->level==2 && in_array($request->level, [3,4]))){
                 $user->level = $request->level;
                 $user->save();
             }
@@ -94,10 +110,6 @@ class EmployeeController extends Controller
             elseif($request->email){
                 $this->validatorEmail(["email"=>$request->email])->validate();
 
-                $email = ActiveEmail::where('user_id',$user->id)->first();
-                $email->email = $request->email;
-                $email->save();
-
                 $user->email = $request->email;
                 $user->save();
 
@@ -108,26 +120,24 @@ class EmployeeController extends Controller
                 $user->password = bcrypt($request->password);
                 $user->save();
             }
-
-            Session()->flash('message','Успешен запис!');
-
-
-            return $this->edit($request);
+            else{
+                return "Unauthorized action!";
+            }
 
 
 
-        }
-        else{
 
-            return "<p>Nqmash Pravo!</p>";
 
-        }
+            return redirect(route('employees.edit', ['temp'=>1,'id'=>$request->id,'level'=>$request->level]));
+
+
+
 
 
     }
 
     public function block(Request $request){
-        if(Auth::user()->level <= 2){
+        if(in_array(Auth::user()->level, [1,2])){
 
 
             $user = User::where('id', $request->id)->first();
@@ -140,7 +150,7 @@ class EmployeeController extends Controller
             return "<button id=\"".$user->id."A\" class=\"btn activate\" value=\"".$user->id."\" title=\"Activate the account\" onclick=\"activate(this.value)\">Activate</button>";
         }
         else{
-            return "<p>Nqmash Pravo!</p>";
+            return "Unauthorized action!";
         }
         }
         else{
@@ -151,7 +161,7 @@ class EmployeeController extends Controller
     }
 
     public function activate(Request $request){
-        if(Auth::user()->level <= 2){
+        if(in_array(Auth::user()->level, [1,2])){
 
             $user = User::where('id', $request->id)->first();
             if((Auth::user()->level==1 && $user->level > 1) || (Auth::user()->level==2 && $user->level > 2)){
@@ -161,7 +171,7 @@ class EmployeeController extends Controller
                 return "<button id=\"".$user->id."B\" class=\"btn block\" value=\"".$user->id."\" title=\"Block the account\" onclick=\"block(this.value)\">Block</button>";
             }
 
-            return "<p>Nqmash Pravo!</p>";
+            return "Unauthorized action!";
             }
         else{
             return view('home2');
@@ -173,17 +183,21 @@ class EmployeeController extends Controller
     }
 
     public function delete(Request $request){
-        $user = User::where('id', $request->id)->first();
+        if(in_array(Auth::user()->level, [1,2])) {
+            $user = User::where('id', $request->id)->first();
 
-        if((Auth::user()->level == 1 && $user->level > 1) || (Auth::user()->level==2 && $user->level > 2)){
+            if ((Auth::user()->level == 1 && $user->level > 1) || (Auth::user()->level == 2 && $user->level > 2)) {
 
-            $user->status = 2;
-            $user->save();
+                $user->status = 2;
+                $user->save();
 
-            $email = ActiveEmail::where('user_id', $user->id);
-            $email->delete();
-
-            return $user->id;
+                return $user->id;
+            } else {
+                return "Unauthorized action!";
+            }
+        }
+        else{
+            return view('home2');
         }
     }
 
@@ -191,7 +205,9 @@ class EmployeeController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:active_emails'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->where(function($query){
+                return $query->where('status','!=',2);
+            })],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
@@ -206,7 +222,9 @@ class EmployeeController extends Controller
     protected function validatorEmail(array $data)
     {
         return Validator::make($data, [
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:active_emails'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->where(function($query){
+                return $query->where('status','!=',2);
+            })]
 
         ]);
     }

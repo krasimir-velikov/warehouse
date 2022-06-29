@@ -14,12 +14,7 @@
 @endsection
 
 @section('content')
-    @if (session()->has('message'))
-        <div style="position:fixed;  z-index:10; bottom:20px; right:20px;" class="alert alert-success" role="alert">
-            {{ session('message') }}
-        </div>
-    @endif
-    <button class="btn btn-primary" onclick="window.location='{{route('employees')}}'">Back to Employees</button>
+    <button class="btn mx-3 btn-primary" onclick="window.location='{{route('employees')}}'">Back to Employees</button>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -27,7 +22,7 @@
                     <div class="card-header text-center"><h3>Edit Employee Account: <b>{{$user->name}}</b></h3></div>
 
                     <div class="card-body my-2">
-                        <form method="POST" action="{{ route('employees.storeEdit') }}">
+                        <form method="POST" action="{{ route('employees.update') }}">
                             @csrf
                             <input type="hidden" value="{{$user->id}}" name="id">
                         <div class="form-group row">
@@ -62,7 +57,7 @@
 
                             <div class="card-body collapse" id="info">
 
-                                <form method="POST" action="{{ route('employees.storeEdit') }}">
+                                <form method="POST" action="{{ route('employees.update') }}">
                                     @csrf
                                     <input type="hidden" value="{{$user->id}}" name="id">
 
@@ -90,7 +85,7 @@
                                     </div>
                                 </form>
 
-                                    <form method="POST" action="{{ route('employees.storeEdit') }}">
+                                    <form method="POST" action="{{ route('employees.update') }}">
                                         @csrf
                                         <input type="hidden" value="{{$user->id}}" name="id">
 
@@ -131,7 +126,7 @@
                                         </a>
                             <div class="card-body collapse" id="password">
 
-                            <form method="POST" action="{{ route('employees.storeEdit') }}">
+                            <form method="POST" action="{{ route('employees.update') }}">
                                             @csrf
                                 <input type="hidden" value="{{$user->id}}" name="id">
 
@@ -186,4 +181,23 @@
             </div>
         </div>
     </div>
+    @if(isset($temp))
+        <div id="successMessage"></div>
+    @endif
+@endsection
+@section('scripts')
+    <script>
+        $(document).ready(function(){
+            if(document.getElementsByClassName("invalid-feedback").length){
+                alert('Employee account edit failed!')
+                console.log(1);
+
+            }else if(document.getElementById('successMessage')) {
+                alert('Successfully edited employee account.')
+            }
+        })
+
+
+    </script>
+
 @endsection

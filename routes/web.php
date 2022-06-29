@@ -26,6 +26,13 @@ Route::group(['middleware' => ['auth']], function () {
 
     //Products
     Route::get('/products', 'ProductController@index')->name('products');
+    Route::get('/products/create', 'ProductController@create')->name('products.create');
+    Route::get('/products/edit', 'ProductController@edit')->name('products.edit');
+    Route::get('/products/show', 'ProductController@show')->name('products.show');
+    Route::get('/products/subcats', 'ProductController@subcats')->name('products.subcats');
+    Route::get('/products/delete', 'ProductController@delete')->name('products.delete');
+    Route::post('/products/store', 'ProductController@store')->name('products.store');
+    Route::post('/products/update', 'ProductController@update')->name('products.update');
 
     //Finances
     Route::get('/finances', 'HomeController@finances')->name('finances');
@@ -38,7 +45,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/employees/block', 'EmployeeController@block')->name('employees.block');
     Route::get('/employees/delete', 'EmployeeController@delete')->name('employees.delete');
     Route::post('/employees/store', 'EmployeeController@store')->name('employees.store');
-    Route::post('/employees/store_edit', 'EmployeeController@storeEdit')->name('employees.storeEdit');
+    Route::post('/employees/update', 'EmployeeController@update')->name('employees.update');
 
     //Transfers
     Route::get('/transfers', 'HomeController@transfers')->name('transfers');
@@ -48,6 +55,22 @@ Route::group(['middleware' => ['auth']], function () {
 
     //Suppliers
     Route::get('/suppliers', 'SupplierController@index')->name('suppliers');
+
+    //Categories
+    Route::get('/categories', 'CategoryController@index')->name('categories');
+    Route::get('/categories/create', 'CategoryController@create')->name('categories.create');
+    Route::post('/categories/store', 'CategoryController@store')->name('categories.store');
+    Route::get('/categories/edit', 'CategoryController@edit')->name('categories.edit');
+    Route::get('/categories/delete', 'CategoryController@delete')->name('categories.delete');
+    Route::post('/categories/update', 'CategoryController@update')->name('categories.update');
+
+
+    //Subcategories
+    Route::get('/subcategories/create', 'SubcategoryController@create')->name('subcategories.create');
+    Route::post('/subcategories/store', 'SubcategoryController@store')->name('subcategories.store');
+    Route::get('/subcategories/edit', 'SubcategoryController@edit')->name('subcategories.edit');
+    Route::get('/subcategories/delete', 'SubcategoryController@delete')->name('subcategories.delete');
+    Route::post('/subcategories/update', 'SubcategoryController@update')->name('subcategories.update');
 
 
 });
