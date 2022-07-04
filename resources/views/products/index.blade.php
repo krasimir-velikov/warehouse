@@ -40,8 +40,8 @@
     <div class="container-fluid">
         <div class="row my-2 justify-content-between">
             <div class="col-8 mx-5">
-                <h1>Product Availability @if(request('cat')): {{$categories->where('id',request('cat'))->first()->name}}
-                    @elseif(request('subcat')): {{$subcategories->where('id',request('subcat'))->first()->name}}@endif
+                <h1><strong>Product Availability</strong> @if(request('cat')): {{$categories->where('id',request('cat'))->first()->name}}
+                    @elseif(request('subcat')): {{$subcategories->where('id',request('subcat'))->first()->category->name}}/{{$subcategories->where('id',request('subcat'))->first()->name}}@endif
                 @if(request('name'))-> {{$products->where('id',request('name'))->first()->name}}
                     @elseif(request('namelike'))-> {{request('namelike')}} @endif @if(!request('cat')&&!request('subcat')&&!request('name')&&!request('namelike')): All Products @endif</h1>
             </div>

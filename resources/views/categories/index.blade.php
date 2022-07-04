@@ -134,7 +134,7 @@
 
                     if ($("#subhas" + value).length) {
                         var p = $("#subhas" + value).val().replaceAll("$", "\n");
-                        if (confirm("ATTENTION!\nThe following products are listed in this subcategory:\n\n" + p + "\nIf you want to delete the subcategory, all above products will be deleted as well!")) {
+                        if (confirm("ATTENTION!\nThe following products are listed in this subcategory:\n\n" + p + "\nIf you to delete the subcategory, all above products will be deleted as well!\nAre you sure, you want to delete this category?")) {
 
                             $.get("{{route('subcategories.delete')}}", {id: value}, function (data) {
                                 // alert("Subcategory " + data + " successfully deleted.");
@@ -160,7 +160,7 @@
 
                     if($("#cathas"+value).length){
                         var p = $("#cathas"+value).val().replaceAll("$", "\n");
-                        if(confirm("ATTENTION!\nThe following products are listed in this category:\n\n"+p+"\nIf you want to delete the category, all above products and all corresponding subcategories will be deleted as well!")){
+                        if(confirm("ATTENTION!\nThe following products are listed in this category:\n\n"+p+"\nIf you delete the category, all above products and corresponding subcategories will be deleted as well!\nAre you sure, you want to delete this category?")){
 
                             $.get("{{route('categories.delete')}}", {id: value}, function (data) {
                                 // alert("Category "+data+" successfully deleted.");
@@ -184,19 +184,6 @@
                     }
 
 
-
-
-                    {{--var email = $("#"+value+"E").text();--}}
-                    {{--if(confirm("Are you sure, you want to delete "+email+"?")) {--}}
-
-
-                    {{--    $.get("{{route('employees.delete')}}", {id: value}, function (data) {--}}
-
-                    {{--        $("#row" + data).remove();--}}
-
-
-                    {{--    })--}}
-                    {{--}--}}
                 }
 
             </script>

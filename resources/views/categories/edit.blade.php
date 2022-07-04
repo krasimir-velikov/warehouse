@@ -51,7 +51,6 @@
         $(document).ready(function(){
             if(document.getElementsByClassName("invalid-feedback").length){
                 alert('Category edit failed!')
-                console.log(1);
 
             }else if(document.getElementById('successMessage')) {
                 alert('Successfully edited category.')

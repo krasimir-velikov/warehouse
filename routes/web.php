@@ -50,11 +50,23 @@ Route::group(['middleware' => ['auth']], function () {
     //Transfers
     Route::get('/transfers', 'HomeController@transfers')->name('transfers');
 
-    //Clients
-    Route::get('/clients', 'ClientController@index')->name('clients');
-
     //Suppliers
     Route::get('/suppliers', 'SupplierController@index')->name('suppliers');
+    Route::get('/suppliers/create', 'SupplierController@create')->name('suppliers.create');
+    Route::get('/suppliers/edit', 'SupplierController@edit')->name('suppliers.edit');
+    Route::get('/suppliers/delete', 'SupplierController@delete')->name('suppliers.delete');
+    Route::post('/suppliers/store', 'SupplierController@store')->name('suppliers.store');
+    Route::post('/suppliers/update', 'SupplierController@update')->name('suppliers.update');
+
+
+
+    //Clients
+    Route::get('/clients', 'ClientController@index')->name('clients');
+    Route::get('/clients/create', 'ClientController@create')->name('clients.create');
+    Route::get('/clients/edit', 'ClientController@edit')->name('clients.edit');
+    Route::get('/clients/delete', 'ClientController@delete')->name('clients.delete');
+    Route::post('/clients/store', 'ClientController@store')->name('clients.store');
+    Route::post('/clients/update', 'ClientController@update')->name('clients.update');
 
     //Categories
     Route::get('/categories', 'CategoryController@index')->name('categories');

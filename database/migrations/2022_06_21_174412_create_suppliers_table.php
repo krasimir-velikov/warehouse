@@ -18,6 +18,7 @@ class CreateSuppliersTable extends Migration
             $table->string('name');
             $table->double('balance')->default(0);
             $table->string('information', 1000)->nullable();
+            $table->boolean('deleted')->default(0);
             $table->timestamps();
         });
     }

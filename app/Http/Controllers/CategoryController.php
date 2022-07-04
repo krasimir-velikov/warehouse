@@ -142,6 +142,10 @@ class CategoryController extends Controller
                     $product->deleted = 1;
                     $product->save();
                 }
+                foreach($category->subcategory->where('deleted',0) as $subcategory){
+                    $subcategory->deleted = 1;
+                    $subcategory->save();
+                }
 
             }
             $category->deleted = 1;

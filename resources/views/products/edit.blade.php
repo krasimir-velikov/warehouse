@@ -25,8 +25,13 @@
                                 <label for="name" class="col-md-4 col-form-label text-md-right">{{ __('Product Name') }}</label>
 
                                 <div class="col-md-6">
-                                    <input id="name" type="text" class="form-control" value="{{$product->name}}" name="name" required autofocus>
+                                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror " value="{{$product->name}}" name="name" required autofocus>
 
+                                    @error('name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                    @enderror
                                 </div>
                             </div>
 
@@ -114,6 +119,8 @@
 
                                 </div>
                             </div>
+                            <input type="hidden" name="id" value="{{$product->id}}">
+
 
                             <div class="form-group row mb-0">
                                 <div class="col-md-6 offset-md-4">
@@ -125,7 +132,6 @@
                             @if(isset($temp))
                                 <div id="successMessage"></div>
                             @endif
-                            <input type="hidden" name="id" value="{{$product->id}}">
                         </form>
                     </div>
                 </div>
@@ -173,7 +179,10 @@
 
     <script>
         $(document).ready(function(){
-            if(document.getElementById('successMessage')) {
+            if(document.getElementsByClassName("invalid-feedback").length){
+                alert('Product edit failed!')
+            }
+            else if(document.getElementById('successMessage')) {
                 alert('Successfully edited product.')
             }
         })

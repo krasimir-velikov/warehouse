@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <button class="btn btn-primary" onclick="window.location='{{route('products')}}'">Back to Products</button>
+    <button class="btn btn-primary mx-3" onclick="window.location='{{route('products')}}'">Back to Products</button>
 
     <div class="container-fluid ">
         <div class="justify-content-center row ">
@@ -82,7 +82,7 @@
                                     <td></td>
                                 <tr>
                                     <td width="20%" style="background-color: #f2f2f2; " class="border text-right"><h5>Buy Price</h5></td>
-                                    <td class="border"><h5>{{$product->bought_for}}</h5></td>
+                                    <td class="border"><h5>{{$product->bought_for}} lv/{{$product->unit}}</h5></td>
 
                                 </tr>
                                 <tr>
@@ -91,7 +91,7 @@
                                 </tr>
                                 <tr>
                                     <td width="20%" style="background-color: #f2f2f2; " class="border text-right"><h5>Sell Price</h5></td>
-                                    <td class="border"><h5>{{$product->sold_for}}</h5></td>
+                                    <td class="border"><h5>{{$product->sold_for}} lv/{{$product->unit}}</h5></td>
 
                                 </tr>
                                 <tr>
@@ -109,7 +109,7 @@
                                 </tr>
                                 <tr>
                                     <td width="20%" style="background-color: #f2f2f2; " class="border text-right"><h5>Description</h5></td>
-                                    <td class="border" class="text-left"><p>{{$product->description}}</p></td>
+                                    <td class="border text-left"><p>{{$product->description}}</p></td>
 
                                 </tr>
                                 <tr>

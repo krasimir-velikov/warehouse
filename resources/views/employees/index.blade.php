@@ -60,7 +60,8 @@
 
 
                             <div class="card-body collapse" id="admins">
-                                <table class="container">
+                                <table class="container table-hover">
+                                    <thead>
                                     <tr class="row my-5">
                                         <th class="col-3 border-right border-bottom text-center">Name</th>
                                         <th class="col-3 border-right border-bottom text-center">Email</th>
@@ -68,14 +69,17 @@
                                         </th>
                                         <th class="col-3 border-bottom text-center">Actions</th>
                                     </tr>
+
                                     <tr>
-                                        <td colspan="2" class="col text-center">
+                                        <th colspan="2" class="col text-center">
                                             <form method="GET" action="{{route('employees.create')}}">
                                                 <input type="hidden" name="level" value="2">
                                                 <button class="btn btn-primary create" title="New Administrator Account" type="submit">Add accounts</button>
                                             </form>
-                                        </td>
+                                        </th>
                                     </tr>
+                                    </thead>
+                                    <tbody>
 
                                     @foreach($admins as $admin)
                                         <tr id="row{{$admin->id}}" class="row my-5">
@@ -105,6 +109,7 @@
 
 
                                     @endforeach
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -119,7 +124,8 @@
 
 
                                 <div class="card-body collapse" id="accountants">
-                                    <table class="container">
+                                    <table class="container table-hover">
+                                        <thead>
                                         <tr class="row my-5">
                                             <th class="col-3 border-right border-bottom text-center">Name</th>
                                             <th class="col-3 border-right border-bottom text-center">Email</th>
@@ -127,6 +133,7 @@
                                             </th>
                                             <th class="col-3 border-bottom text-center">Actions</th>
                                         </tr>
+
                                         <tr>
                                             <td colspan="2" class="col text-center">
                                                 <form method="GET" action="{{route('employees.create')}}">
@@ -135,6 +142,8 @@
                                                 </form>
                                             </td>
                                         </tr>
+                                        </thead>
+                                        <tbody>
 
                                         @foreach($accountants as $accountant)
                                             <tr id="row{{$accountant->id}}" class="row my-5">
@@ -164,6 +173,8 @@
 
 
                                         @endforeach
+                                        </tbody>
+
                                     </table>
                                 </div>
                             </div>
@@ -179,8 +190,8 @@
 
 
                                 <div class="card-body collapse" id="workers">
-                                    <table class="container">
-
+                                    <table class="container table-hover">
+                                        <thead>
                                         <tr class="row my-5">
                                             <th class="col-3 border-right border-bottom text-center">Name</th>
                                             <th class="col-3 border-right border-bottom text-center">Email</th>
@@ -188,6 +199,7 @@
                                             </th>
                                             <th class="col-3 border-bottom text-center">Actions</th>
                                         </tr>
+
                                         <tr>
                                             <td colspan="2" class="col text-center">
                                                 <form method="GET" action="{{route('employees.create')}}">
@@ -196,6 +208,8 @@
                                                 </form>
                                             </td>
                                         </tr>
+                                        </thead>
+                                        <tbody>
 
                                         @foreach($workers as $worker)
                                             <tr id="row{{$worker->id}}" class="row my-5">
@@ -225,6 +239,7 @@
 
 
                                         @endforeach
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>

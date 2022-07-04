@@ -50,7 +50,6 @@
         $(document).ready(function(){
             if(document.getElementsByClassName("invalid-feedback").length){
                 alert('Category creation failed!')
-                console.log(1);
 
             }else if(document.getElementById('successMessage')) {
                 alert('Successfully created new category.')

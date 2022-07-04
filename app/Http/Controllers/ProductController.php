@@ -9,6 +9,8 @@ use App\Supplier;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -83,13 +85,22 @@ class ProductController extends Controller
      */
     public function create(Request $request)
     {
-        if(in_array(Auth::user()->level, [1,2,4])) {
+        if(in_array(Auth::user()->level, [1,2])) {
 
 
             $categories = Category::where('deleted',0)->orderBy('name', 'ASC')->get();
             $suppliers = Supplier::orderBy('name', 'ASC')->get();
 
-            return view('products.create', compact('categories', 'suppliers'));
+
+            if($request->temp){
+                $temp=$request->temp;
+                return view('products.create', compact('categories', 'suppliers', 'temp'));
+
+            }
+            else{
+                return view('products.create', compact('categories', 'suppliers'));
+
+            }
 
         }
         else{
@@ -129,6 +140,9 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         if(in_array(Auth::user()->level, [1,2])){
+
+            $this->validatorName(["name"=>$request->name, "id"=>$request->id, "subcat"=>$request->subcat])->validate();
+
             $product = new Product();
             $product->name = $request->name;
             $product->category_id = $request->cat;
@@ -145,13 +159,9 @@ class ProductController extends Controller
 
             $product->save();
 
-            $temp = 1;
-
-            $categories = Category::where('deleted',0)->orderBy('name', 'ASC')->get();
-            $suppliers = Supplier::orderBy('name', 'ASC')->get();
 
 
-                return view('products.create', compact('temp', 'categories', 'suppliers'));
+            return redirect(route('products.create', ['temp'=> 1]));
 
 
         }
@@ -182,13 +192,21 @@ class ProductController extends Controller
      */
     public function edit(Request $request)
     {
-        if(in_array(Auth::user()->level, [1,2,4])){
+        if(in_array(Auth::user()->level, [1,2])){
+
             $product = Product::where('id', $request->id)->first();
             $categories = Category::where('deleted',0)->orderBy('name', 'ASC')->get();
             $suppliers = Supplier::orderBy('name', 'ASC')->get();
             $subcategories = Subcategory::where('deleted',0)->where('category_id', $product->category_id)->get();
 
-            return view('products.edit', compact('product','categories','suppliers', 'subcategories'));
+            if($request->temp){
+                $temp = $request->temp;
+                return view('products.edit', compact('product','categories','suppliers', 'subcategories','temp'));
+            }
+            else{
+                return view('products.edit', compact('product','categories','suppliers', 'subcategories'));
+            }
+
         }
         else{
             return $this->index($request);
@@ -204,7 +222,11 @@ class ProductController extends Controller
      */
     public function update(Request $request)
     {
-        if(in_array(Auth::user()->level, [1,2,4])){
+        if(in_array(Auth::user()->level, [1,2])){
+
+
+            $this->validatorName(["name"=>$request->name, "id"=>$request->id, "subcat"=>$request->subcat])->validate();
+
 
             $product = Product::where('id', $request->id)->first();
             $product->name = $request->name;
@@ -228,14 +250,9 @@ class ProductController extends Controller
 
             $product->save();
 
-            $temp = 1;
 
-            $product = Product::where('id', $request->id)->first();
-            $categories = Category::where('deleted',0)->orderBy('name', 'ASC')->get();
-            $suppliers = Supplier::orderBy('name', 'ASC')->get();
-            $subcategories = Subcategory::where('deleted',0)->where('category_id', $product->category_id)->get();
 
-            return view('products.edit', compact('temp', 'product', 'categories', 'suppliers','subcategories'));
+            return redirect(route('products.edit', ['temp'=> 1, 'id'=>$request->id]));
 
 
         }
@@ -268,4 +285,12 @@ class ProductController extends Controller
     {
         //
     }
+
+protected function validatorName(array $data)
+{
+    return Validator::make($data, [
+        'name' => Rule::unique('products')->where('deleted',0)->where('subcategory_id',$data['subcat'])->whereNot('id', $data['id'])
+
+    ]);
+}
 }
