@@ -21,61 +21,54 @@ class ProductController extends Controller
      */
     public function index(Request $request){
 
+        $searchproducts = Product::where('deleted', 0)->orderBy('name', 'ASC');
+        $products = Product::where('deleted', 0)->orderBy('name', 'ASC');
+        $subcategories = Subcategory::where('deleted',0)->orderBy('name', 'ASC');
 
         if($request->cat){
-            if($request->namelike){
-                $subcategories = Subcategory::where('deleted',0)->orderBy('name', 'ASC')->get();
-                $products = Product::where('deleted', 0)->where('category_id',$request->cat)->where('name','like','%'.$request->namelike.'%')->orderBy('name', 'ASC')->paginate(13);
-                $searchproducts = Product::where('deleted', 0)->where('category_id',$request->cat)->where('name','like','%'.$request->namelike.'%')->orderBy('name', 'ASC')->get();
-            }
-            else{
-                $products = Product::where('deleted', 0)->where('category_id',$request->cat)->orderBy('name', 'ASC')->paginate(13);
-                $searchproducts = Product::where('deleted', 0)->where('category_id',$request->cat)->orderBy('name', 'ASC')->get();
-                $subcategories = Subcategory::where('deleted',0)->where('category_id', $request->cat)->orderBy('name','ASC')->get();
-
+            $products = $products->where('category_id',$request->cat);
+            $searchproducts = $searchproducts->where('category_id',$request->cat);
+            $subcategories = $subcategories->where('category_id', $request->cat);
+        }
+        if($request->subcat){
+            if(Subcategory::where('id',$request->subcat)->first()->category_id != $request->cat){
+                $request->request->remove('subcat');
+            }else{
+                $products = $products->where('subcategory_id',$request->subcat);
+                $searchproducts = $searchproducts->where('subcategory_id',$request->subcat);
             }
 
         }
-        elseif($request->subcat){
-            $subcategories = Subcategory::where('deleted',0)->orderBy('name', 'ASC')->get();
-
-            if($request->namelike){
-                $products = Product::where('deleted', 0)->where('subcategory_id',$request->subcat)->where('name','like','%'.$request->namelike.'%')->orderBy('name', 'ASC')->paginate(13);
-                $searchproducts = Product::where('deleted', 0)->where('subcategory_id',$request->subcat)->where('name','like','%'.$request->namelike.'%')->orderBy('name', 'ASC')->get();
-
+        if($request->namelike){
+            $products = $products->where('name','like','%'.$request->namelike.'%');
+            $searchproducts = $searchproducts->where('name','like','%'.$request->namelike.'%');
+        }
+        if($request->name){
+            $products = $products->where('id',$request->name);
+        }
+        if($request->available){
+            if($request->available == 1){
+                $products = $products->where('amount','>',0);
+                $searchproducts = $searchproducts->where('amount','>',0);
             }
-            else{
-                $products = Product::where('deleted', 0)->where('subcategory_id',$request->subcat)->orderBy('name', 'ASC')->paginate(13);
-                $searchproducts = Product::where('deleted', 0)->where('subcategory_id',$request->subcat)->orderBy('name', 'ASC')->get();
-
+            elseif($request->available == 2){
+                $products = $products->where('amount',0);
+                $searchproducts = $searchproducts->where('amount',0);
             }
         }
-        else{
-            $subcategories = Subcategory::where('deleted',0)->orderBy('name', 'ASC')->get();
-
-            if($request->name){
-                $products = Product::where('deleted', 0)->where('id',$request->name)->orderBy('name', 'ASC')->paginate(13);
-                $searchproducts = Product::where('deleted', 0)->orderBy('name', 'ASC')->get();
-
-            }
-            elseif($request->namelike){
-                $products = Product::where('deleted', 0)->where('name','like','%'.$request->namelike.'%')->orderBy('name', 'ASC')->paginate(13);
-                $searchproducts = Product::where('deleted', 0)->where('name','like','%'.$request->namelike.'%')->orderBy('name', 'ASC')->get();
-
-            }
-            else{
-                $products = Product::where('deleted', 0)->orderBy('name', 'ASC')->paginate(13);
-                $searchproducts = Product::where('deleted', 0)->orderBy('name', 'ASC')->get();
-
-            }
+        if($request->supplier){
+            $products = $products->where('supplier_id',$request->supplier);
+            $searchproducts = $searchproducts->where('supplier_id',$request->supplier);
         }
-
+        $products = $products->paginate(15);
+        $searchproducts = $searchproducts->get();
+        $subcategories = $subcategories->get();
         $categories = Category::where('deleted',0)->orderBy('name', 'ASC')->get();
-        $suppliers = Supplier::all();
+        $suppliers = Supplier::where('deleted',0)->orderBy('name', 'ASC')->get();
 
 
 
-        return view('products.index', compact('products', 'categories', 'subcategories', 'suppliers', 'searchproducts'));
+        return view('products.index', compact('products', 'categories', 'subcategories', 'suppliers','searchproducts'));
     }
 
     /**
@@ -89,7 +82,7 @@ class ProductController extends Controller
 
 
             $categories = Category::where('deleted',0)->orderBy('name', 'ASC')->get();
-            $suppliers = Supplier::orderBy('name', 'ASC')->get();
+            $suppliers = Supplier::orderBy('name', 'ASC')->where('deleted',0)->get();
 
 
             if($request->temp){
@@ -141,7 +134,7 @@ class ProductController extends Controller
     {
         if(in_array(Auth::user()->level, [1,2])){
 
-            $this->validatorName(["name"=>$request->name, "id"=>$request->id, "subcat"=>$request->subcat])->validate();
+            $this->validatorName(["name"=>$request->name, "id"=>$request->id, "subcat"=>$request->subcat, "supp"=>$request->supplier])->validate();
 
             $product = new Product();
             $product->name = $request->name;
@@ -150,9 +143,8 @@ class ProductController extends Controller
             $product->unit = $request->unit;
             $product->bought_for = $request->buyprice;
             $product->sold_for = $request->sellprice;
-            if($request->supplier) {
-                $product->supplier_id = $request->supplier;
-            }
+            $product->supplier_id = $request->supplier;
+
             if($request->description){
                 $product->description = $request->description;
             }
@@ -179,7 +171,7 @@ class ProductController extends Controller
     public function show(Request $request)
     {
 
-        $product = Product::where('id',$request->id)->where('deleted',0)->first();
+        $product = Product::where('id',$request->id)->first();
 
         return view('products.show', compact('product'));
     }
@@ -196,7 +188,7 @@ class ProductController extends Controller
 
             $product = Product::where('id', $request->id)->first();
             $categories = Category::where('deleted',0)->orderBy('name', 'ASC')->get();
-            $suppliers = Supplier::orderBy('name', 'ASC')->get();
+            $suppliers = Supplier::orderBy('name', 'ASC')->where('deleted',0)->get();
             $subcategories = Subcategory::where('deleted',0)->where('category_id', $product->category_id)->get();
 
             if($request->temp){
@@ -225,7 +217,7 @@ class ProductController extends Controller
         if(in_array(Auth::user()->level, [1,2])){
 
 
-            $this->validatorName(["name"=>$request->name, "id"=>$request->id, "subcat"=>$request->subcat])->validate();
+            $this->validatorName(["name"=>$request->name, "id"=>$request->id, "subcat"=>$request->subcat, "supp"=>$request->supplier])->validate();
 
 
             $product = Product::where('id', $request->id)->first();
@@ -235,12 +227,8 @@ class ProductController extends Controller
             $product->unit = $request->unit;
             $product->bought_for = $request->buyprice;
             $product->sold_for = $request->sellprice;
-            if($request->supplier) {
-                $product->supplier_id = $request->supplier;
-            }
-            else{
-                $product->supplier_id = null;
-            }
+            $product->supplier_id = $request->supplier;
+
             if($request->description){
                 $product->description = $request->description;
             }
@@ -289,7 +277,7 @@ class ProductController extends Controller
 protected function validatorName(array $data)
 {
     return Validator::make($data, [
-        'name' => Rule::unique('products')->where('deleted',0)->where('subcategory_id',$data['subcat'])->whereNot('id', $data['id'])
+        'name' => Rule::unique('products')->where('deleted',0)->where('subcategory_id',$data['subcat'])->where('supplier_id',$data['supp'])->whereNot('id', $data['id'])
 
     ]);
 }

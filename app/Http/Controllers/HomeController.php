@@ -26,20 +26,9 @@ class HomeController extends Controller
     public function index()
     {
 
-            return view('home2');
+            return view('home');
 
     }
-    public function finances(){
-        if(Auth::user()->level<=3){
-            return view('finances');
-        }
-        else{
-            return view('home2');
-        }
-    }
-    public function transfers()
-    {
-        return view('transfers');
-    }
+
 
 }

@@ -41,10 +41,6 @@
         <div class="row my-2 justify-content-between">
             <div class="col-8 mx-5">
                 <h1><strong>Clients:</strong> @if(request('name')) {{$clients->first()->name }} @else All Clients @endif</h1>
-{{--                <h1>Clients @if(request('cat')): {{$categories->where('id',request('cat'))->first()->name}}--}}
-{{--                    @elseif(request('subcat')): {{$subcategories->where('id',request('subcat'))->first()->name}}@endif--}}
-{{--                    @if(request('name'))-> {{$products->where('id',request('name'))->first()->name}}--}}
-{{--                    @elseif(request('namelike'))-> {{request('namelike')}} @endif @if(!request('cat')&&!request('subcat')&&!request('name')&&!request('namelike')): All Products @endif</h1>--}}
             </div>
 
             @if(in_array(Auth::user()->level, [1,2])) <form method="GET" action="{{route('clients.create')}}">
@@ -72,7 +68,7 @@
 
 
             <div class="col my-1 my-1">
-                <a href="{{route('clients')}}" class="btn btn-sm btn-outline-dark float-right">Clear Filters</a>
+                <a href="{{route('clients')}}" class="btn btn-sm btn-outline-dark">Clear Search</a>
             </div>
 
         </div>
@@ -97,7 +93,7 @@
                     <td id="name{{$client->id}}">{{$client->name}}</td>
                     <td class="text-center">{{$client->information}}</td>
                     <td id="bal{{$client->id}}" style="color: @if($client->balance<0) red @else green @endif " class="text-center">{{$client->balance}} lv</td>
-                    <td class="text-center">{{$client->created_at}}</td>
+                    <td class="text-center">{{date('d.m.Y', strtotime($client->created_at))}}</td>
                     @if(in_array(Auth::user()->level, [1,2])) <td class="text-center">
                         <form method="GET" class="text-center d-inline" action="{{route('clients.edit')}}">
                             <input type="hidden" name="id" value="{{$client->id}}">
@@ -149,7 +145,7 @@
             }
             else if(balance < 0){
                 balance *= -1;
-                if(confirm("Client "+name+" owes "+balance+" lv.\nIf you delete this client, the corresponding exports will remain marked as unpayed!\n Are you sure, you want to delete this client?")){
+                if(confirm("Client "+name+" owes "+balance+" lv.\n Are you sure, you want to delete this client?")){
                     $.get("{{route('clients.delete')}}", {id: value}, function (data) {
 
                         $("#" + value).remove();
@@ -159,7 +155,7 @@
                 }
             }
             else{
-                if(confirm("Are you sure, you want to delete client "+name+"?")){
+                if(confirm("Client "+name+" owes nothing.\nAre you sure, you want to delete client "+name+"?")){
                     $.get("{{route('clients.delete')}}", {id: value}, function (data) {
 
                         $("#" + value).remove();

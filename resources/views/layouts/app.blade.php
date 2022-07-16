@@ -45,24 +45,19 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                             </li>
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
                         @else
                             @if(!Route::is('home'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('home') }}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Home</a>
                                 </li>
-                                @if(!Route::is('products'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{route('products')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Products</a>
-                                </li>
-                                @endif
-                                @if(!Route::is('transfers'))
+                                @if(!Route::is('imports'))
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{route('transfers')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Transfers</a>
+                                        <a class="nav-link" href="{{route('imports')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Imports</a>
+                                    </li>
+                                @endif
+                                @if(!Route::is('exports'))
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{route('exports')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Exports</a>
                                     </li>
                                 @endif
                                 @if(!Route::is('clients'))
@@ -75,9 +70,14 @@
                                         <a class="nav-link" href="{{route('suppliers')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Suppliers</a>
                                     </li>
                                 @endif
-                                @if(!Route::is('finances') && in_array(Auth::user()->level, [1,2,3]))
+{{--                                @if(!Route::is('finances') && in_array(Auth::user()->level, [1,2,3]))--}}
+{{--                                    <li class="nav-item">--}}
+{{--                                        <a class="nav-link" href="{{route('finances')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Finances</a>--}}
+{{--                                    </li>--}}
+{{--                                @endif--}}
+                                @if(!Route::is('products'))
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{route('finances')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Finances</a>
+                                        <a class="nav-link" href="{{route('products')}}"><i class="fas fa-2x fa-project-diagram hideMenuIcons"></i>Products</a>
                                     </li>
                                 @endif
                                 @if(!Route::is('employees') && in_array(Auth::user()->level, [1,2]))
@@ -91,7 +91,21 @@
                             @endif
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
+                                    {{ Auth::user()->name}}
+                                    @switch(Auth::user()->level)
+                                        @case(1)
+                                            {{" - SuperAdmin"}}
+                                        @break
+                                        @case(2)
+                                            {{" - Admin"}}
+                                        @break
+                                        @case(3)
+                                            {{" - Accountant"}}
+                                        @break
+                                        @case(4)
+                                            {{" - Worker"}}
+                                        @break
+                                    @endswitch
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">

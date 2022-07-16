@@ -17,7 +17,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes([
+    'register'=>false,
+    'email'=>false,
+    'request'=>false,
+    'update'=>false,
+    'reset'=>false,
+    'confirm'=>false]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -34,9 +40,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/products/store', 'ProductController@store')->name('products.store');
     Route::post('/products/update', 'ProductController@update')->name('products.update');
 
-    //Finances
-    Route::get('/finances', 'HomeController@finances')->name('finances');
-
     //Employees
     Route::get('/employees', 'EmployeeController@index')->name('employees');
     Route::get('/employees/create', 'EmployeeController@create')->name('employees.create');
@@ -47,8 +50,33 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/employees/store', 'EmployeeController@store')->name('employees.store');
     Route::post('/employees/update', 'EmployeeController@update')->name('employees.update');
 
-    //Transfers
-    Route::get('/transfers', 'HomeController@transfers')->name('transfers');
+    //Imports
+    Route::get('/imports', 'ImportController@index')->name('imports');
+    Route::get('/imports/create', 'ImportController@create')->name('imports.create');
+    Route::get('/imports/edit', 'ImportController@edit')->name('imports.edit');
+    Route::get('/imports/show', 'ImportController@show')->name('imports.show');
+    Route::post('/imports/store', 'ImportController@store')->name('imports.store');
+    Route::post('/imports/update', 'ImportController@update')->name('imports.update');
+    Route::post('/imports/delete', 'ImportController@delete')->name('imports.delete');
+    Route::post('/imports/payment', 'ImportController@payment')->name('imports.payment');
+    Route::post('/imports/deletewhole', 'ImportController@deleteWhole')->name('imports.deletewhole');
+    Route::get('/imports/supplier', 'ImportController@supplier')->name('imports.supplier');
+    Route::get('/imports/insert', 'ImportController@insert')->name('imports.insert');
+    Route::get('/imports/addproduct', 'ImportController@addproduct')->name('imports.addproduct');
+
+    //Exports
+    Route::get('/exports', 'ExportController@index')->name('exports');
+    Route::get('/exports/create', 'ExportController@create')->name('exports.create');
+    Route::get('/exports/edit', 'ExportController@edit')->name('exports.edit');
+    Route::get('/exports/show', 'ExportController@show')->name('exports.show');
+    Route::post('/exports/store', 'ExportController@store')->name('exports.store');
+    Route::post('/exports/update', 'ExportController@update')->name('exports.update');
+    Route::post('/exports/delete', 'ExportController@delete')->name('exports.delete');
+    Route::post('/exports/payment', 'ExportController@payment')->name('exports.payment');
+    Route::post('/exports/deletewhole', 'ExportController@deleteWhole')->name('exports.deletewhole');
+    Route::get('/exports/client', 'ExportController@client')->name('exports.client');
+    Route::get('/exports/insert', 'ExportController@insert')->name('exports.insert');
+    Route::get('/exports/addproduct', 'ExportController@addproduct')->name('exports.addproduct');
 
     //Suppliers
     Route::get('/suppliers', 'SupplierController@index')->name('suppliers');
@@ -57,8 +85,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/suppliers/delete', 'SupplierController@delete')->name('suppliers.delete');
     Route::post('/suppliers/store', 'SupplierController@store')->name('suppliers.store');
     Route::post('/suppliers/update', 'SupplierController@update')->name('suppliers.update');
-
-
 
     //Clients
     Route::get('/clients', 'ClientController@index')->name('clients');

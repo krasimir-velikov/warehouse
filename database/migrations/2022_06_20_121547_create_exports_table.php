@@ -15,11 +15,12 @@ class CreateExportsTable extends Migration
     {
         Schema::create('exports', function (Blueprint $table) {
             $table->id();
-            $table->integer('product_id');
-            $table->unsignedInteger('amount');
             $table->unsignedDouble('price');
-            $table->integer('customer_id');
-            $table->integer('user_id');
+            $table->integer('client_id');
+            $table->integer('created_by');
+            $table->integer('updated_by')->nullable();
+            $table->integer('accountant_id')->nullable();
+            $table->integer('status')->default('1');// 0 - deleted; 1 - not payed; 2 - payed.
             $table->timestamps();
         });
     }

@@ -40,91 +40,108 @@
     <div class="container-fluid">
         <div class="row my-2 justify-content-between">
             <div class="col-8 mx-5">
-                <h1><strong>Product Availability</strong> @if(request('cat')): {{$categories->where('id',request('cat'))->first()->name}}
-                    @elseif(request('subcat')): {{$subcategories->where('id',request('subcat'))->first()->category->name}}/{{$subcategories->where('id',request('subcat'))->first()->name}}@endif
-                @if(request('name'))-> {{$products->where('id',request('name'))->first()->name}}
-                    @elseif(request('namelike'))-> {{request('namelike')}} @endif @if(!request('cat')&&!request('subcat')&&!request('name')&&!request('namelike')): All Products @endif</h1>
+                <h1><strong>Product Availability</strong>
+{{--                    @if(request('subcat')): {{$subcategories->where('id',request('subcat'))->first()->category->name}}/{{$subcategories->where('id',request('subcat'))->first()->name}}--}}
+{{--                    @elseif(request('cat')): {{$categories->where('id',request('cat'))->first()->name}}@endif--}}
+                    @if(request('cat')): {{$categories->where('id',request('cat'))->first()->name}}@endif
+                    @if(request('subcat'))/{{$subcategories->where('id',request('subcat'))->first()->name}}@endif
+                    @if(request('name'))-> {{$products->where('id',request('name'))->first()->name}}
+                    @elseif(request('namelike'))-> {{request('namelike')}} @endif
+                    @if(request('supplier')) by {{$suppliers->where('id',request('supplier'))->first()->name}} @endif
+                    @if(request('available')==1) (Available)@elseif(request('available')==2) (Unavailable)@endif
+                    @if(!request('cat')&&!request('subcat')&&!request('name')&&!request('namelike')&&!request('supplier')&&!('available')): All Products @endif</h1>
             </div>
             @if(in_array(Auth::user()->level, [1,2])) <div class="col">
-{{--                <button class="addproduct btn my-1 mx-2 float-right">Add product</button>--}}
-{{--                <button class="categories btn my-1 mx-2 float-right">Manage Categories</button>--}}
+
                 <form method="GET" action="{{route('products.create')}}">
                     <button class="btn addproduct my-1 mx-2 float-right" title="Add New Product" type="submit">Add products</button>
                 </form>
                 <form method="GET" action="{{route('categories')}}">
-                    <button class="btn categories my-1 mx-2 float-right" title="Add New Product" type="submit">Manage categories</button>
+                    <button class="btn categories my-1 mx-2 float-right" title="Manage Categories" type="submit">Manage categories</button>
                 </form>
             </div> @endif
 
         </div>
         <div class="row my-5">
-            <h3 class="col-xl-1 text-center my-1">Search:</h3>
-            <div class="d-inline col-xl-2 mx-3 my-1">
-                <form>
-                    <select name="name" class="form-control selectName" onchange="this.form.submit()" style="height: 35px">
-                        <option value="" @if(!request('name'))selected @endif disabled="">Filter by name</option>
+            <form class="form-inline">
+                <h3 class="mx-3 my-1">Search:</h3>
+                <div class="m-2">
 
-                        @foreach($searchproducts as $product)
-                            <option @if($product->id == request('name')) selected @endif value="{{$product->id}}">{{$product->name}}</option>
+                        <select name="name" class="form-control selectName" onchange="this.form.submit()" style="height: 35px">
+                            <option value="" @if(!request('name'))selected @endif disabled="">Filter by name</option>
+
+                            @foreach($searchproducts as $product)
+                                <option @if($product->id == request('name')) selected @endif value="{{$product->id}}">{{$product->name}}: {{$product->category->name}} -> {{$product->subcategory->name}}</option>
+                            @endforeach
+
+                        </select>
+
+                </div>
+                <h3 class="mx-3 my-1">Filters:</h3>
+
+
+
+
+                <div class="m-2">
+                    <label for="cat" class="form-label ">{{ __('Category: ') }}</label>
+                    <select name="cat" class="form-control selectCat" onchange="this.form.submit()" style="height: 35px">
+                        <option value="" @if(!request('cat'))selected @endif disabled="">Filter by category</option>
+                        @foreach($categories as $cat)
+                            <option @if($cat->id == request('cat')) selected @endif value="{{$cat->id}}">{{$cat->name}}</option>
                         @endforeach
-
                     </select>
-                </form>
-            </div>
-            <h3 class="col-xl-1 text-center my-1">Filters:</h3>
+
+                </div>
+
+                @if(request('cat') || request('subcat'))
+                <div class="m-2">
+
+                    <label for="subcat" class="form-label ">{{ __('Subcategory: ') }}</label>
+
+                    <select name="subcat" class="form-control selectSubCat" onchange="this.form.submit()" style="height: 35px">
+                        <option value="" @if(!request('subcat'))selected @endif disabled="">Filter by subcategory</option>
+                        @foreach($subcategories as $subcat)
+                            <option @if($subcat->id == request('subcat'))selected @endif value="{{$subcat->id}}">{{$subcat->name}}</option>
+                        @endforeach
+                    </select>
+
+                </div>
+                @endif
+                <div class="m-2">
+                        <label for="namelike" class="form-label ">{{ __('Name: ') }}</label>
+                        <input name="namelike" class="form-control" value="{{request('namelike')}}" placeholder="Name" onfocusout="this.form.submit()">
 
 
+                </div>
 
+                <div class="m-2">
+                    <label for="supplier" class="form-label ">{{ __('Supplier: ') }}</label>
+                    <select name="supplier" class="form-control selectSup" onchange="this.form.submit()" style="height: 35px">
+                        <option value="" @if(!request('supplier'))selected @endif disabled="">Filter by supplier</option>
+                        @foreach($suppliers as $supplier)
+                            <option @if($supplier->id == request('supplier')) selected @endif value="{{$supplier->id}}">{{$supplier->name}}</option>
+                        @endforeach
+                    </select>
 
-            <div class="d-inline col-xl-2 mx-3 my-1">
-                <form>
-                <select name="cat" class="form-control selectCat" onchange="this.form.submit()" style="height: 35px">
-                    <option value="" @if(!request('cat'))selected @endif disabled="">Filter by category</option>
-                    @foreach($categories as $cat)
-                        <option @if($cat->id == request('cat')) selected @endif value="{{$cat->id}}">{{$cat->name}}</option>
-                    @endforeach
-                </select>
+                </div>
+
+                <div class="m-2">
+                    <label for="available" class="form-label ">Status:</label>
+                    <select name="available" class="form-control " onchange="this.form.submit()" style="height: 35px">
+                        <option value="" disabled @if(!request('available')) selected @endif >Select Availability</option>
+                        <option value="1" @if(request('available') == 1) selected @endif>Available</option>
+                        <option value="2" @if(request('available') == 2) selected @endif>Unavailable</option>
+                    </select>
+                </div>
             </form>
-        </div>
 
-            @if(request('cat') || request('subcat'))
-            <div class="d-inline col-xl-2 mx-3 my-1">
-                <form>
 
-                <select name="subcat" class="form-control selectSubCat" onchange="this.form.submit()" style="height: 35px">
-                    <option value="" @if(!request('subcat'))selected @endif disabled="">Filter by subcategory</option>
-                    @foreach($subcategories as $subcat)
-                        <option @if($subcat->id == request('subcat'))selected @endif value="{{$subcat->id}}">{{$subcat->name}}</option>
-                    @endforeach
-                </select>
-                </form>
-            </div>
-            @endif
-            <div class="d-inline col-xl-2 mx-3 my-1">
-                <form>
-                    <input name="namelike" class="form-control" value="{{request('namelike')}}" placeholder="Name" onfocusout="this.form.submit()">
-                    @if(request('cat'))<input type="hidden" name="cat" value="{{request('cat')}}">
-                    @elseif(request('subcat'))<input type="hidden" name="subcat" value="{{request('subcat')}}">@endif
-                </form>
-            </div>
 
-            <div class="col my-1 my-1">
+
+
+            <div class="col m-2">
                 <a href="{{route('products')}}" class="btn btn-sm btn-outline-dark float-right">Clear Filters</a>
             </div>
-
-{{--            <div class="d-inline col-2 mx-3">--}}
-{{--                <form>--}}
-{{--                <select name="suppplier" class="form-control selectSup" onchange="this.form.submit()" style="height: 35px">--}}
-{{--                    <option value="" @if(!request('supplier'))selected @endif disabled="">Filter by supplier</option>--}}
-{{--                    <option value="1">1</option>--}}
-{{--                    <option value="2">2</option>--}}
-{{--                    <option value="3">3</option>--}}
-{{--                </select>--}}
-{{--                </form>--}}
-{{--            </div>--}}
-
-
-
         </div>
 
 
@@ -149,12 +166,12 @@
                 @foreach($products as $product)
                     <tr title="Click for Details" id="{{$product->id}}">
                         <td onclick="window.location.href='{{route('products.show', ['id'=>$product->id])}}'" id="name{{$product->id}}">{{$product->name}}</td>
-                        <td onclick="window.location.href='{{route('products.show', ['id'=>$product->id])}}'" class="text-center">{{$categories->where('id', $product->category_id)->first()->name}}</td>
-                        <td onclick="window.location.href='{{route('products.show', ['id'=>$product->id])}}'" class="text-center">{{$subcategories->where('id', $product->subcategory_id)->first()->name}}</td>
+                        <td onclick="window.location.href='{{route('products.show', ['id'=>$product->id])}}'" class="text-center">{{$product->category->name}}</td>
+                        <td onclick="window.location.href='{{route('products.show', ['id'=>$product->id])}}'" class="text-center">{{$product->subcategory->name}}</td>
                         <td onclick="window.location.href='{{route('products.show', ['id'=>$product->id])}}'" class="text-center">{{$product->bought_for}} lv/{{$product->unit}}</td>
                         <td onclick="window.location.href='{{route('products.show', ['id'=>$product->id])}}'" class="text-center">{{$product->sold_for}} lv/{{$product->unit}}</td>
                         <td onclick="window.location.href='{{route('products.show', ['id'=>$product->id])}}'" id="amount{{$product->id}}" class="text-center" style="color: @if($product->amount == 0)red @else green @endif">{{$product->amount}} {{$product->unit}}</td>
-                        <td onclick="window.location.href='{{route('products.show', ['id'=>$product->id])}}'" class="text-center">@if(count($suppliers) && $suppliers->where('id', $product->supplier_id)->first()){{$suppliers->where('id',$product->supplier_id)->first()->name}}@else - @endif</td>
+                        <td onclick="window.location.href='{{route('products.show', ['id'=>$product->id])}}'" class="text-center">{{$product->supplier->name}}</td>
                         @if(in_array(Auth::user()->level, [1,2])) <td class="text-center">
                             <form method="GET" class="text-center d-inline" action="{{route('products.edit')}}">
                                 <input type="hidden" name="id" value="{{$product->id}}">

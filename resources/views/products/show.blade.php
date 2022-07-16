@@ -100,7 +100,7 @@
                                 </tr>
                                 <tr>
                                     <td width="20%" style="background-color: #f2f2f2; " class="border text-right"><h5>Supplier</h5></td>
-                                    <td class="border"><h5>@if($product->supplier) {{$product->supplier->name}} @else - @endif</h5></td>
+                                    <td class="border"><h5>{{$product->supplier->name}}</h5></td>
 
                                 </tr>
                                 <tr>

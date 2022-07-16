@@ -50,17 +50,7 @@
 
 
                             <div class="form-group row sub">
-{{--                                <label for="supplier" class="col-md-4 col-form-label text-md-right">{{ __('Usual Supplier') }}</label>--}}
 
-{{--                                <div class="col-md-5">--}}
-{{--                                    <select id="supplier" class="form-control selectSubCat" name="supplier" required autofocus>--}}
-
-{{--                                        <option disabled selected></option>--}}
-{{--                                            @foreach($suppliers as $supplier)--}}
-{{--                                                <option value="{{$supplier->id}}">{{$supplier->name}}</option>--}}
-{{--                                        @endforeach--}}
-{{--                                    </select>--}}
-{{--                                </div>--}}
                             </div>
 
                             <div class="form-group row">
@@ -82,25 +72,27 @@
                             <div class="form-group row">
                                 <label for="buyprice" class="col-md-4 col-form-label text-md-right">{{ __('Buy Price') }}</label>
 
-                                <div class="col-md-6">
+                                <div class="col-md-4 col-10">
                                     <input id="buyprice" type="number" step="0.01" min="0" class="form-control" name="buyprice" required autofocus>
 
                                 </div>
+                                <p class="col-2 col-form-label">lv</p>
                             </div>
 
                             <div class="form-group row">
                                 <label for="sellprice" class="col-md-4 col-form-label text-md-right">{{ __('Sell Price') }}</label>
 
-                                <div class="col-md-6">
+                                <div class="col-md-4 col-10">
                                     <input id="sellprice" type="number" step="0.01" min="0" class="form-control" name="sellprice" required autofocus>
 
                                 </div>
+                                <p class="col-2 col-form-label">lv</p>
                             </div>
                             <div class="form-group row">
-                                <label for="supplier" class="col-md-4 col-form-label text-md-right">{{ __('Usual Supplier') }}</label>
+                                <label for="supplier" class="col-md-4 col-form-label text-md-right">{{ __('Supplier') }}</label>
 
                                 <div class="col-md-5">
-                                    <select id="supplier" class="form-control selectCat" name="supplier" autofocus>
+                                    <select id="supplier" class="form-control selectCat" name="supplier" autofocus required>
 
                                         <option disabled selected></option>
                                         @foreach($suppliers as $supplier)

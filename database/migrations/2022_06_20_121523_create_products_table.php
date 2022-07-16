@@ -23,7 +23,7 @@ class CreateProductsTable extends Migration
             $table->unsignedDouble('bought_for')->nullable();
             $table->unsignedDouble('sold_for')->nullable();
             $table->unsignedInteger('amount')->default(0);
-            $table->integer('supplier_id')->nullable();
+            $table->integer('supplier_id');
             $table->boolean('deleted')->default(0);
             $table->timestamps();
         });

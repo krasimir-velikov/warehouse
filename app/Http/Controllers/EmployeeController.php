@@ -23,7 +23,7 @@ class EmployeeController extends Controller
 
             }
             else{
-                return view('home2');
+                return view('home');
             }
 
 
@@ -43,7 +43,7 @@ class EmployeeController extends Controller
 
         }
         else{
-            return view('home2');
+            return view('home');
         }
     }
     public function store(Request $request){
@@ -87,7 +87,7 @@ class EmployeeController extends Controller
 
         }
         else{
-            return view('home2');
+            return view('home');
         }
 
 
@@ -154,7 +154,7 @@ class EmployeeController extends Controller
         }
         }
         else{
-            return view('home2');
+            return view('home');
         }
 
 
@@ -174,7 +174,7 @@ class EmployeeController extends Controller
             return "Unauthorized action!";
             }
         else{
-            return view('home2');
+            return view('home');
 
         }
 
@@ -197,7 +197,7 @@ class EmployeeController extends Controller
             }
         }
         else{
-            return view('home2');
+            return view('home');
         }
     }
 

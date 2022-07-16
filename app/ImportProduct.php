@@ -4,12 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Supplier extends Model
+class ImportProduct extends Model
 {
     public function product(){
-        return $this->hasMany(Product::class);
+        return $this->belongsTo(Product::class);
     }
     public function import(){
-        return $this->hasMany(Import::class);
+        return $this->belongsTo(Import::class);
     }
 }

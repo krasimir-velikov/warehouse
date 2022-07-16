@@ -6,7 +6,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header text-center"><h3>Add New Suppliers</h3></div>
+                    <div class="card-header text-center"><h3>Add New Supplier</h3></div>
 
                     <div class="card-body">
                         <form method="POST" action="{{ route('suppliers.store') }}">

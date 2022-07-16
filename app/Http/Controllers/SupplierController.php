@@ -19,14 +19,14 @@ class SupplierController extends Controller
     {
 
         if($request->name){
-            $suppliers = Supplier::where('deleted',0)->where('id',$request->name)->orderBy('name', 'ASC')->paginate(13);
+            $suppliers = Supplier::where('deleted',0)->where('id',$request->name)->orderBy('name', 'ASC')->paginate(15);
 
         }
         else{
-            $suppliers = Supplier::where('deleted',0)->orderBy('name', 'ASC')->paginate(13);
+            $suppliers = Supplier::where('deleted',0)->orderBy('name', 'ASC')->paginate(15);
         }
 
-        $searchsuppliers = Supplier::where('deleted',0)->orderBy('name', 'ASC')->paginate(13);
+        $searchsuppliers = Supplier::where('deleted',0)->orderBy('name', 'ASC')->paginate(15);
 
 
         return view('suppliers.index', compact('suppliers', 'searchsuppliers'));
@@ -155,6 +155,15 @@ class SupplierController extends Controller
     public function delete(Request $request){
         if(in_array(Auth::user()->level, [1,2])){
             $supplier = Supplier::where('id',$request->id)->first();
+
+            if($supplier->product->where('deleted',0)){
+                foreach($supplier->product->where('deleted',0) as $product){
+                    $product->deleted = 1;
+                    $product->save();
+                }
+
+            }
+
             $supplier->deleted = 1;
             $supplier->save();
 

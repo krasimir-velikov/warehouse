@@ -24,7 +24,7 @@ class CategoryController extends Controller
             return view('categories.index', compact('categories'));
         }
         else{
-            return view('home2');
+            return view('home');
         }
     }
 
@@ -46,7 +46,7 @@ class CategoryController extends Controller
             return view('categories.create');
         }
         else{
-            return view('home2');
+            return view('home');
         }
     }
 
@@ -106,7 +106,7 @@ class CategoryController extends Controller
             return view('categories.edit', compact('category'));
         }
         else{
-            return view('home2');
+            return view('home');
         }
     }
 

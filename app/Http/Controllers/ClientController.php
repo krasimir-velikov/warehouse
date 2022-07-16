@@ -19,14 +19,14 @@ class ClientController extends Controller
     {
 
         if($request->name){
-            $clients = Client::where('deleted',0)->where('id',$request->name)->orderBy('name', 'ASC')->paginate(13);
+            $clients = Client::where('deleted',0)->where('id',$request->name)->orderBy('name', 'ASC')->paginate(15);
 
         }
         else{
-            $clients = Client::where('deleted',0)->orderBy('name', 'ASC')->paginate(13);
+            $clients = Client::where('deleted',0)->orderBy('name', 'ASC')->paginate(15);
         }
 
-        $searchclients = Client::where('deleted',0)->orderBy('name', 'ASC')->paginate(13);
+        $searchclients = Client::where('deleted',0)->orderBy('name', 'ASC')->paginate(15);
 
 
         return view('clients.index', compact('clients', 'searchclients'));

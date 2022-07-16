@@ -68,7 +68,7 @@
 
 
             <div class="col my-1 my-1">
-                <a href="{{route('suppliers')}}" class="btn btn-sm btn-outline-dark float-right">Clear Filters</a>
+                <a href="{{route('suppliers')}}" class="btn btn-sm btn-outline-dark">Clear Search</a>
             </div>
 
         </div>
@@ -92,8 +92,8 @@
                 <tr id="{{$supplier->id}}">
                     <td id="name{{$supplier->id}}">{{$supplier->name}}</td>
                     <td class="text-center">{{$supplier->information}}</td>
-                    <td id="bal{{$supplier->id}}" style="color: @if($supplier->balance<0) red @else green @endif " class="text-center">{{$supplier->balance}} lv</td>
-                    <td class="text-center">{{$supplier->created_at}}</td>
+                    <td id="bal{{$supplier->id}}" style="color: @if($supplier->balance>0) red @else green @endif " class="text-center">{{$supplier->balance}} lv</td>
+                    <td class="text-center">{{date('d.m.Y', strtotime($supplier->created_at))}}</td>
                     @if(in_array(Auth::user()->level, [1,2])) <td class="text-center">
                         <form method="GET" class="text-center d-inline" action="{{route('suppliers.edit')}}">
                             <input type="hidden" name="id" value="{{$supplier->id}}">
@@ -101,6 +101,9 @@
                         </form>
                         <div class="d-inline text-center">
                             <button class="btn  my-1 btn-sm delete" value="{{$supplier->id}}" title="Delete supplier" onclick="deleteIt(this.value)">Delete</button>
+                            @if($supplier->product->where('deleted',0)->first() )
+                                <input type="hidden" id="suphas{{$supplier->id}}" value="@foreach($supplier->product->where('deleted',0) as $product){{$product->name}}({{$product->category->name}}->{{$product->subcategory->name}}): {{$product->amount}} {{$product->unit}}$@endforeach ">
+                            @endif
                         </div>
                     </td> @endif
 
@@ -134,34 +137,80 @@
             var name = $("#name"+value).text();
 
             if(balance > 0){
-                if(confirm("Supplier "+name+" is owed "+balance+" lv.\n Are you sure, you want to delete this supplier?")){
-                    $.get("{{route('suppliers.delete')}}", {id: value}, function (data) {
+                if(confirm("Supplier "+name+" is owed "+balance+" lv.\nAre you sure, you want to delete this supplier?")){
+                    if($("#suphas"+value).length){
+                        var p = $("#suphas" + value).val().replaceAll("$", "\n");
+                        if(confirm("ATTENTION!\nThe following products are assigned to this supplier:\n\n" + p + "\nIf you to delete the supplier, all above products will be deleted as well!\nAre you sure, you want to delete this supplier?")){
+                            $.get("{{route('suppliers.delete')}}", {id: value}, function (data) {
 
-                        $("#" + value).remove();
+                                $("#" + value).remove();
 
 
-                    })
+                            })
+                        }
+                    }
+                    else{
+                        if(confirm("There are no products assigned to this supplier.\nAre you sure, you want to delete this supplier?")){
+                            $.get("{{route('suppliers.delete')}}", {id: value}, function (data) {
+
+                                $("#" + value).remove();
+
+
+                            })
+                        }
+                    }
+
                 }
             }
             else if(balance < 0){
                 balance *= -1;
-                if(confirm("Supplier "+name+" owes "+balance+" lv.\nIf you delete this supplier, the corresponding exports will remain marked as unpayed!\n Are you sure, you want to delete this supplier?")){
-                    $.get("{{route('suppliers.delete')}}", {id: value}, function (data) {
+                if(confirm("Supplier "+name+" owes "+balance+" lv. Are you sure, you want to delete this supplier?")){
+                    if($("#suphas"+value).length){
+                        var p = $("#suphas" + value).val().replaceAll("$", "\n");
+                        if(confirm("ATTENTION!\nThe following products are assigned to this supplier:\n\n" + p + "\nIf you to delete the supplier, all above products will be deleted as well!\nAre you sure, you want to delete this supplier?")){
+                            $.get("{{route('suppliers.delete')}}", {id: value}, function (data) {
 
-                        $("#" + value).remove();
+                                $("#" + value).remove();
 
 
-                    })
+                            })
+                        }
+                    }
+                    else{
+                        if(confirm("There are no products assigned to this supplier.")){
+                            $.get("{{route('suppliers.delete')}}", {id: value}, function (data) {
+
+                                $("#" + value).remove();
+
+
+                            })
+                        }
+                    }
                 }
             }
             else{
-                if(confirm("Are you sure, you want to delete supplier "+name+"?")){
-                    $.get("{{route('suppliers.delete')}}", {id: value}, function (data) {
+                if(confirm("Supplier "+name+" is not owed anything.\nAre you sure, you want to delete this supplier?")){
+                    if($("#suphas"+value).length){
+                        var p = $("#suphas" + value).val().replaceAll("$", "\n");
+                        if(confirm("ATTENTION!\nThe following products are assigned to this supplier:\n\n" + p + "\nIf you to delete the supplier, all above products will be deleted as well!\nAre you sure, you want to delete this supplier?")){
+                            $.get("{{route('suppliers.delete')}}", {id: value}, function (data) {
 
-                        $("#" + value).remove();
+                                $("#" + value).remove();
 
 
-                    })
+                            })
+                        }
+                    }
+                    else{
+                        if(confirm("There are no products assigned to this supplier.\nAre you sure, you want to delete this supplier?")){
+                            $.get("{{route('suppliers.delete')}}", {id: value}, function (data) {
+
+                                $("#" + value).remove();
+
+
+                            })
+                        }
+                    }
                 }
             }
 

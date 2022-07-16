@@ -19,10 +19,31 @@ class DatabaseSeeder extends Seeder
             'level' => 1
         ]);
 
-        DB::table('active_emails')->insert([
-            'id' => 1,
-            'email' => 'kvelikov43@gmail.com',
-            'user_id' => 1,
-        ]);
+//        DB::table('categories')->insert([
+//            'name' => 'Clothing',
+//        ]);
+//        DB::table('categories')->insert([
+//            'name' => 'Food',
+//        ]);
+//        DB::table('subcategories')->insert([
+//           'name' => 'Shirts',
+//           'category_id' => 1
+//        ]);
+//        DB::table('subcategories')->insert([
+//            'name' => 'Shoes',
+//            'category_id' => 1
+//        ]);
+//        DB::table('subcategories')->insert([
+//           'name' => 'Vegetables',
+//           'category_id' => 2
+//        ]);
+//        DB::table('subcategories')->insert([
+//            'name' => 'Fruits',
+//            'category_id' => 2
+//        ]);
+//        DB::table('suppliers')->insert([
+//            'name' => 'Schneider'
+//
+//        ]);
     }
 }
